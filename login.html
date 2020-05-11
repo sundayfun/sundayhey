@@ -7,7 +7,7 @@
     <link href="css/login.css" rel="stylesheet" type="text/css" media="all" />
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.js"></script>
-    <script src="js/axios.min.js"></script>
+    <script src="js/polyfill.min.js"></script>
 </head>
 <body>
     <div class="content">
@@ -90,7 +90,7 @@
             registerUn.val('');
             registerPw.val('');
             captcha_id = '';
-            axiosCaptcha();
+            fetchCaptcha();
             $('#code-pic').attr('src', '');
         })
 
@@ -121,7 +121,7 @@
             } else if (!codeVal.val()) {
                 $('.re-code').show();
             } else {
-                axiosLogin(loginUsername.val(), loginPassword.val(), codeVal.val());
+                fetchLogin(loginUsername.val(), loginPassword.val(), codeVal.val());
             }
         })
         userRegister.click(function () {
@@ -132,33 +132,66 @@
             } else if (!codeVal.val()) {
                 $('.re-code').show();
             } else {
-                axiosRegister(registerUn.val(), registerPw.val(), codeVal.val());
+                fetchRegister(registerUn.val(), registerPw.val(), codeVal.val());
             }
         })
 
-        axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
-        axios.defaults.headers.post['Cache-Contro'] = 'no-cache'
-        axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
-        axios.defaults.headers.post['Access-Control-Allow-Headers'] = 'Origin, Content-Type, Accept, Authorization, X-Request-With'
-        axios.defaults.headers.post['Access-Control-Allow-Methods'] = 'PUT,POST,GET,DELETE,OPTIONS'
+        function fetchTimeout(fetchPromise, path, timeout) {
+            let abortFunc = null;
+            const abortPromise = new Promise((resolve, reject) => {
+                abortFunc = path => {
+                    reject({ code: 'TIMEOUT', msg: path }); // eslint-disable-line
+                };
+            });
 
-        const instance = axios.create({
-            baseURL: 'https://staging.huayinapp.com/api/1',
-            timeout: 3000,
-        });
+            const abortablePromise = Promise.race([fetchPromise, abortPromise]);
 
-        $(axiosCaptcha());
-        function axiosCaptcha() {
-            instance.post('/web/captcha').then(function (res) {
+            setTimeout(() => {
+                abortFunc(path);
+            }, timeout);
+
+            return abortablePromise;
+        }
+
+        function createFetch(url, config) {
+            return fetchTimeout(
+                fetch(url, { ...config, credentials: 'include'}),
+                url,
+                3000
+            )
+            .then(res => res.text())
+            .then(res => {
+                const result = res ? JSON.parse(res) : {};
+                return result.code < 0 ? Promise.reject(result) : result;
+            });
+        }
+
+        function get(url, { params } = {}) {
+            return createFetch(params ? `${url}?${JSON.stringify(params)}` : url, {
+                method: 'GET',
+            });
+        }
+
+        function post(url, { data, mode } = {}) {
+            return createFetch(url, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                mode: 'no-cors',
+            });
+        }
+        var origin = 'https://staging.huayinapp.com/api/1'
+        $(fetchCaptcha());
+        function fetchCaptcha() {
+            post(origin+'/web/captcha').then(function (res) {
                 captcha_id = res.captcha_id;
-                instance.get('/api/1/web/captcha/'+ res.captcha_id).then(function(res) {
+                get('/api/1/web/captcha/'+ res.captcha_id).then(function(res) {
                     $('#code-pic').attr("src", res);
                 })
             })
         }
 
-        function axiosRegister(name, pw, cInput) {
-            instance.post('/api/1/web/user/register', {
+        function fetchRegister(name, pw, cInput) {
+            post(origin + '/web/user/register', {
                 login_name: name,
                 password: pw,
                 captcha_id: captcha_id,
@@ -168,8 +201,8 @@
             })
         }
 
-        function axiosLogin(name, pw, code) {
-            instance.post('/api/1/web/user/login', {
+        function fetchLogin(name, pw, code) {
+            post(origin +'/web/user/login', {
                 login_name: name,
                 password: pw,
                 captcha_id: captcha_id,
