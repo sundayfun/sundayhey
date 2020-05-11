@@ -2,6 +2,7 @@
 <html lang="Zh-cn">
 <head>
 <title>Sunday Hey</title>
+<link rel="shortcut icon" href="favicon.ico">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="keywords" content="" />
@@ -10,6 +11,7 @@
 <link href="css/bootstrap.css" rel="stylesheet" type="text/css" media="all" />
 <link rel="stylesheet" href="css/flexslider.css" type="text/css" media="screen" property="" />
 <link href="css/style.css" rel="stylesheet" type="text/css" media="all" />	
+<link href="css/index.css" rel="stylesheet" type="text/css" media="all" />	
 <!--// css -->
 <!-- font -->
 <!-- 
@@ -22,23 +24,22 @@
 
 </head>
 <body> 
+	<nav class="nav">
+		<ul style="position: relative;">
+			<li class="current"><a href="#">首页</a></li>
+			<li><a href="about.html">关于我们</a></li>
+			<li><a href="games.html">游戏中心</a></li>
+			<li><a href="single.html">游戏介绍</a></li>
+			<li><a href="contact.html">联系我们</a></li>
+			<li style="position: absolute;right: 10px;"><a href="login.html">登录/注册</a></li>
+		</ul>
+	</nav>
 <!-- Header -->
 	<div class="header">
 		<!-- Navbar -->
 		<nav class="navbar navbar-default">
 			<div class="container">
 
-<!--
-				<div id="navbar" class="navbar-collapse collapse">
-					<ul class="nav navbar-nav navbar-right">
-						<li class="hover-effect"><a href="index.html">Home</a></li>
-						<li class="hover-effect"><a href="about.html">About</a></li>
-						<li class="hover-effect"><a href="games.html">Games</a></li>
-						<li class="hover-effect"><a href="news.html">News</a></li>
-						<li class="hover-effect"><a href="contact.html">Contact</a></li>
-					</ul>
-				</div>
--->
 			</div>
 		</nav>
 		<!-- //Navbar -->
@@ -73,316 +74,45 @@
 			});
 		});
 	</script>
-	<!-- //Banner-Slider-JavaScript -->
-	<!-- //Header -->
-
-<!-- trend -->
-<!-- <div class="trend-w3layouts">
-	<div class="container">
-		<h2>游戏直播（即将上线）</h2>
-		<ul id="flexiselDemo1">			
-				<li>
-					<div class="trend-grid">
-						<h4>竞速类</h4>
-						<img src="images/tg1.jpg" alt=" " class="img-responsive" />
-					</div>
-				</li>
-				<li>
-					<div class="trend-grid">
-						<h4>卡牌类</h4>
-						<img src="images/tg2.jpg" alt=" " class="img-responsive" />
-					</div>
-				</li>
-				<li>
-					<div class="trend-grid">
-						<h4>动作类</h4>
-						<img src="images/tg3.jpg" alt=" " class="img-responsive" />
-					</div>
-				</li>
-				<li>
-					<div class="trend-grid">
-						<h4>养成类</h4>
-						<img src="images/tg4.jpg" alt=" " class="img-responsive" />
-					</div>
-				</li>
-			</ul>
-						<script type="text/javascript">
-							$(window).load(function() {
-								$("#flexiselDemo1").flexisel({
-									visibleItems: 4,
-									animationSpeed: 1000,
-									autoPlay: true,
-									autoPlaySpeed: 3000,    		
-									pauseOnHover: true,
-									enableResponsiveBreakpoints: true,
-									responsiveBreakpoints: { 
-										portrait: { 
-											changePoint:480,
-											visibleItems: 2
-										}, 
-										landscape: { 
-											changePoint:640,
-											visibleItems:3
-										},
-										tablet: { 
-											changePoint:768,
-											visibleItems: 4
-										}
-									}
-								});
-								
-							});
-					</script>
-					<script type="text/javascript" src="js/jquery.flexisel.js"></script>
-	</div>
-</div> -->
 <!-- //trend -->
-
-<!-- trend -->
-<div class="trend-w3layouts">
-	<div class="container">
-		<h2>动漫作品</h2>
-		<ul id="flexiselDemo1">			
-				<li>
-					<div class="trend-grid">
-						
-						<img src="images/dm1.jpg" alt=" " class="img-responsive" />
-					</div>
-				</li>
-				<li>
-					<div class="trend-grid">
-						
-						<img src="images/dm2.jpg" alt=" " class="img-responsive" />
-					</div>
-				</li>
-				<li>
-					<div class="trend-grid">
-						
-						<img src="images/dm3.jpg" alt=" " class="img-responsive" />
-					</div>
-				</li>
-				<li>
-					<div class="trend-grid">
-						
-						<img src="images/dm4.jpg" alt=" " class="img-responsive" />
-					</div>
-				</li>
-			</ul>
-						<script type="text/javascript">
-							$(window).load(function() {
-								$("#flexiselDemo1").flexisel({
-									visibleItems: 4,
-									animationSpeed: 1000,
-									autoPlay: true,
-									autoPlaySpeed: 3000,    		
-									pauseOnHover: true,
-									enableResponsiveBreakpoints: true,
-									responsiveBreakpoints: { 
-										portrait: { 
-											changePoint:480,
-											visibleItems: 2
-										}, 
-										landscape: { 
-											changePoint:640,
-											visibleItems:3
-										},
-										tablet: { 
-											changePoint:768,
-											visibleItems: 4
-										}
-									}
-								});
-								
-							});
-					</script>
-					<script type="text/javascript" src="js/jquery.flexisel.js"></script>
-	</div>
-</div>
-<!-- //trend -->
-
-<!-- gallery -->
-<!-- 	<div class="gallery-w3layouts" id="gallery">
-		<div class="container">
-			<h2>游戏CG、插画选集</h2>			
-			<div class="gallery-grids">
-				<div class="gallery-grid">
-					<a class="book popup-with-zoom-anim button-isi zoomIn animated" data-wow-delay=".5s" href="#small-dialog">
-						<img src="images/g1.jpg" alt=" " class="img-responsive zoom-img" />
-					</a>
-					<a class="book popup-with-zoom-anim button-isi zoomIn animated" data-wow-delay=".5s" href="#small-dialog2">
-						<img src="images/g2.jpg" alt=" " class="img-responsive zoom-img" />
-					</a>
-				</div>
-				<div class="gallery-grid">
-					<a class="book popup-with-zoom-anim button-isi zoomIn animated" data-wow-delay=".5s" href="#small-dialog3">
-						<img src="images/g3.jpg" alt=" " class="img-responsive zoom-img" />
-					</a>
-					<a class="book popup-with-zoom-anim button-isi zoomIn animated" data-wow-delay=".5s" href="#small-dialog4">
-						<img src="images/g5.jpg" alt=" " class="img-responsive zoom-img" />
-					</a>
-				</div>
-				<div class="gallery-grid">
-					<a class="book popup-with-zoom-anim button-isi zoomIn animated" data-wow-delay=".5s" href="#small-dialog5">
-						<img src="images/g6.jpg" alt=" " class="img-responsive zoom-img" />
-					</a>
-					<a class="book popup-with-zoom-anim button-isi zoomIn animated" data-wow-delay=".5s" href="#small-dialog6">
-						<img src="images/g7.jpg" alt=" " class="img-responsive zoom-img" />
-					</a>
-				</div>
-				<div class="gallery-grid">
-					<a class="book popup-with-zoom-anim button-isi zoomIn animated" data-wow-delay=".5s" href="#small-dialog7">
-						<img src="images/g4.jpg" alt=" " class="img-responsive zoom-img" />
-					</a>
-					<a class="book popup-with-zoom-anim button-isi zoomIn animated" data-wow-delay=".5s" href="#small-dialog8">
-						<img src="images/g8.jpg" alt=" " class="img-responsive zoom-img" />
-					</a>
-				</div>
-				<div class="clearfix"> </div>
-			</div>
-		</div>
-	</div> -->
-	<!--//gallery -->
-
 <!-- Collection -->
 	<div class="collection-agileits">
 			<div class="collection-grids-agileits-w3layouts">
-				<div class="col-md-4 col-sm-4 collection-left">
+				<a href="/3D-rolling-game/index.html" target="_blank"><div class="col-md-4 col-sm-4 collection-left">
 					
-				</div>
+				</div></a>
 				<div class="col-md-8 col-sm-8 collection-right">
 					<div class="col-md-4 col-sm-4 collection-grid collection-text collection-grid-1">
 						<img src="images/c1.png" alt="">
 						<h3>主机游戏</h3>
 						<p>为您定期整理推荐热门主机游戏, 让您不错过任何一款好玩的主机游戏</p>
 					</div>
-					<div class="col-md-4 col-sm-4 collection-grid collection-image collection-grid-2">
+					<a href="/2048/index.html" target="_blank"><div class="col-md-4 col-sm-4 collection-grid collection-image collection-grid-2">
 						
-					</div>
+					</div></a>
 					<div class="col-md-4 col-sm-4 collection-grid collection-text collection-grid-3">
 						<img src="images/c2.png" alt="" />
 						<h3>动漫大全</h3>
 						<p>经典动画片大全、热门好看的动漫，每周极速更新</p>
 					</div>
-					<div class="col-md-4 col-sm-4 collection-grid collection-image collection-grid-4">
-						
+					<div class="col-game-grid">
+						<a href="/no-one-die/index.html" target="_blank"><div class="col-md-4 col-sm-4 collection-grid collection-image collection-grid-4">
+						</div></a>
+						<span></span>
 					</div>
 					<div class="col-md-4 col-sm-4 collection-grid collection-text collection-grid-5">
 						<img src="images/c3.png" alt="" />
 						<h3>手机游戏</h3>
 						<p>高清、流畅、丰富的游戏视频和赛事资讯，包含英雄联盟lol 、王者荣耀、绝地求生吃鸡</p>
 					</div>
-					<div class="col-md-4 col-sm-4 collection-grid collection-image collection-grid-6">
+					<a  href="/chicken-shooting/index.html" target="_blank"><div class="col-md-4 col-sm-4 collection-grid collection-image collection-grid-6">
 					
-					</div>
+					</div></a>
 					<div class="clearfix"></div>
 				</div>
 				<div class="clearfix"></div>
 			</div>
 	</div>
-				<!-- //Collection -->
-
-<!-- services-->
-<!--
-<div class="services-agileits-w3layouts">
-	<div class="container">
-		<h3>Services</h3>
-		<div class="col-md-3 service-grid-agileits service-grid-agileits-top">
-			<span class="glyphicon glyphicon-sort-by-attributes" aria-hidden="true"></span>
-			<h4>Quis tortor</h4>
-			<p>Curabitur suscipit porttitor aliquam. Etiam id placerat purus. Integer sodales elit eget arcu placerat.</p>
-			Read More</a>
-		</div>
-		<div class="col-md-3 service-grid-agileits">
-			<span class="glyphicon glyphicon-random" aria-hidden="true"></span>
-			<h4>Eget arcu</h4>
-			<p>Curabitur suscipit porttitor aliquam. Etiam id placerat purus. Integer sodales elit eget arcu placerat.</p>
-			Read More</a>
-		</div>
-		<div class="col-md-3 service-grid-agileits service-grid-agileits-bottom">
-			<span class="glyphicon glyphicon-yen" aria-hidden="true"></span>
-			<h4>Risus porta</h4>
-			<p>Curabitur suscipit porttitor aliquam. Etiam id placerat purus. Integer sodales elit eget arcu placerat.</p>
-			Read More</a>
-		</div>
-		<div class="col-md-3 service-grid-agileits service-grid-agileits-bottom">
-			<span class="glyphicon glyphicon-object-align-right" aria-hidden="true"></span>
-			<h4>Proin sapien</h4>
-			<p>Curabitur suscipit porttitor aliquam. Etiam id placerat purus. Integer sodales elit eget arcu placerat.</p>
-			Read More</a>
-		</div>
-		<div class="clearfix"></div>
-	</div>
-</div>
--->
-<!-- //services-->
-
-<!-- new games -->
-<!--
-<div class="new-w3-agile">
-	<div class="container">
-		<h3>新游预告</h3>
-		<div class="col-md-3 new-grid-w3l view view-eighth">
-			<img src="images/ng1.jpg" alt=" " />
-			<div class="mask">
-				<h4>敬请期待</h4></a>
-				<p>coming soon</p>
-			</div>
-		</div>
-		<div class="col-md-3 new-grid-w3l view view-eighth">
-			<img src="images/ng2.jpg" alt=" " />
-			<div class="mask">
-				<h4>敬请期待</h4></a>
-				<p>coming soon</p>
-			</div>
-		</div>
-		<div class="col-md-3 new-grid-w3l view view-eighth">
-			<img src="images/ng3.jpg" alt=" " />
-			<div class="mask">
-				<h4>敬请期待</h4></a>
-				<p>coming soon</p>
-			</div>
-		</div>
-		<div class="col-md-3 new-grid-w3l view view-eighth">
-			<img src="images/ng4.jpg" alt=" " />
-			<div class="mask">
-				<h4>敬请期待</h4></a>
-				<p>coming soon</p>
-			</div>
-		</div>
-		<div class="col-md-3 new-grid-agile view view-eighth">
-			<img src="images/ng5.jpg" alt=" " />
-			<div class="mask">
-				<h4>敬请期待</h4></a>
-				<p>coming soon</p>
-			</div>
-		</div>
-		<div class="col-md-3 new-grid-agile view view-eighth">
-			<img src="images/ng6.jpg" alt=" " />
-			<div class="mask">
-				<h4>敬请期待</h4></a>
-				<p>coming soon</p>
-			</div>
-		</div>
-		<div class="col-md-3 new-grid-agile view view-eighth">
-			<img src="images/ng7.jpg" alt=" " />
-			<div class="mask">
-				<h4>敬请期待</h4></a>
-				<p>coming soon</p>
-			</div>
-		</div>
-		<div class="col-md-3 new-grid-agile view view-eighth">
-			<img src="images/ng8.jpg" alt=" " />
-			<div class="mask">
-				<h4>敬请期待</h4></a>
-				<p>coming soon</p>
-			</div>
-		</div>
-		<div class="clearfix"></div>
-	</div>
-</div>
--->
-<!-- //new games-->
-
 
 <!-- footer -->
 <div class="footer">
@@ -441,7 +171,7 @@
 		</div>
 		<div class="clearfix"></div>
 		<div class="copyright">
-			<p>Copyright &copy; 2019. 早安科技（广州）有限公司
+			<p>Copyright &copy; 2020. 早安科技（广州）有限公司
 				<br><a href="http://www.beian.miit.gov.cn/" target="_blank">粤ICP备18070086号-1</a>
 				<br><a href="images/license_network.jpg" target="_blank">网络文化经营许可证 粤网文[2019]0062-019号</a>
 			</p>

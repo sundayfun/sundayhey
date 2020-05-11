@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="css/login.css" rel="stylesheet" type="text/css" media="all" />
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/axios.min.js"></script>
+
+</head>
+<body>
+    <div class="content">
+        <div class="form sign-in">
+            <h2>欢迎回来</h2>
+            <label>
+                <span>用户名</span>
+                <input id="login-username" type="username" /><span class="fz nouser">* 用户名不能为空</span>
+            </label>
+            <label>
+                <span>密码</span>
+                <input id="login-password" type="password" /><span class="fz nopwd">* 密码不能为空</span>
+            </label>
+            <label>
+                <span>验证码</span>
+                <input type="number" id="code" />
+            </label>
+            <button type="button" id="login" class="submit">登 录</button>
+        </div>
+        <div class="sub-cont">
+            <div class="img">
+                <div class="img__text m--up">
+                    <h2>还未注册？</h2>
+                    <p>立即注册，发现大量机会！</p>
+                </div>
+                <div class="img__text m--in">
+                    <h2>已有帐号？</h2>
+                    <p>有帐号就登录吧，好久不见了！</p>
+                </div>
+                <div class="img__btn">
+                    <span class="m--up">注 册</span>
+                    <span class="m--in">登 录</span>
+                </div>
+            </div>
+            <div class="form sign-up">
+                <h2>立即注册</h2>
+                <label>
+                    <span>用户名</span>
+                    <input type="text" id="register-un" /><span class="fz re-nouser">* 用户名不能为空</span>
+                </label>
+                <label>
+                    <span>密码</span>
+                    <input type="password" id="register-pw" /><span class="fz re-nopwd">* 必须包含数字、大写字母、小写字母、特殊字符中三种字符，且长度在8到20之间</span>
+                </label>
+                <label>
+                    <span>验证码</span>
+                    <input type="number" id="re-code"/><span class="fz re-code">* 用户名不能为空</span>
+                </label>
+                <button type="button" id="register" class="submit">注 册</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var loginStatus = true;
+        var captcha_id = '';
+
+        var loginUsername = $('#login-username');
+        var loginPassword = $('#login-password');
+        var loginCode = $('#code');
+        var registerUn = $('#register-un');
+        var registerPw = $('#register-pw');
+        var registerCode = $('#re-code');
+        var pwRegex = new RegExp('^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\W_!@#$%^&*`~()-+=]+$)(?![a-z0-9]+$)(?![a-z\W_!@#$%^&*`~()-+=]+$)(?![0-9\W_!@#$%^&*`~()-+=]+$)[a-zA-Z0-9\W_!@#$%^&*`~()-+=]{8,20}$');
+
+
+        $('.img__btn').click(function () {
+            document.querySelector('.content').classList.toggle('s--signup')
+            loginStatus = !loginStatus;
+            !loginStatus && axiosCaptcha();
+            loginUsername.val('');
+            loginPassword.val('');
+            loginCode.val('');
+            registerUn.val('');
+            registerPw.val('');
+            registerCode.val('');
+        })
+
+        loginUsername.bind("input propertychange", function () {
+            if (loginUsername.val().length < 1) { $(".nouser").show(); } else { $(".nouser").hide(); }
+        });
+        loginPassword.bind("input propertychange", function () {
+            if (loginPassword.val().length < 1) { $(".nopwd").show(); } else { $(".nopwd").hide(); }
+        });
+        registerUn.bind("input propertychange", function () {
+            if (registerUn.val().length < 1) { $(".re-nouser").show(); } else { $(".re-nouser").hide(); }
+        });
+        registerPw.bind("input propertychange", function () {
+            if (registerPw.val().length < 1) { $(".re-nopwd").show(); } else { $(".re-nopwd").hide(); }
+            if (!pwRegex.test(registerPw.val())) { $(".re-nopwd").show(); } else { $(".re-nopwd").hide(); }
+        });
+
+        var userLogin = $('#login');
+        var userRegister = $('#register');
+        userLogin.click(function () {
+            if (!loginUsername.val()) {
+                console.log('填写用户名');
+            } else if (!loginPassword.val()) {
+                console.log('填写密码');
+            } else if (!registerCode.val()) {
+                console.log('填写验证码');
+            } else {
+                axiosLogin(loginUsername.val(), loginPassword.val(), registerCode.val());
+            }
+        })
+        userRegister.click(function () {
+            if (!registerUn.val()) {
+                console.log('填写用户名');
+            } else if (!pwRegex.test(registerPw.val())){
+                console.log('密码格式不正确');
+            } else if (!registerCode.val()) {
+                console.log('填写验证码');
+            } else {
+                axiosRegister(registerUn.val(), registerPw.val(), registerCode.val());
+            }
+        })
+
+
+        const instance = axios.create({
+            baseURL: 'https://huayinapp.com',
+            timeout: 1000,
+            headers: { 'Content-Type': 'multipart/form-data' },
+            proxyTable: {
+                "/api/1": {
+                    secure: false,
+                    changeOrigin: true,
+                    pathRewrite: {
+                        "^/api": ""
+                    }
+                }
+            },
+        });
+    
+        instance.defaults.withCredentials = true
+        instance.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded'
+
+        function axiosCaptcha() {
+            instance.post('/api/1/web/captcha').then(function(res) {
+                instance.get('/api/1/web/captcha/'+ res.captcha_id).then(function(res) {
+                    console.log(res);
+                })
+            })
+        }
+
+        function axiosRegister(name, pw, cInput) {
+            instance.post('/api/1/web/user/register', {
+                login_name: name,
+                password: pw,
+                captcha_id: captcha_id,
+                captcha_input: cInput,
+            }).then(function (res) {
+                console.log(res);
+            })
+        }
+
+        function axiosLogin(name, pw, code) {
+            instance.post('/api/1/web/user/login', {
+                login_name: name,
+                password: pw,
+                captcha_id: captcha_id,
+                captcha_input: code,
+            }).then(function (res) {
+                console.log(res);
+                location.href = '/';
+            })
+        }
+    </script>
+</body>
+</html>
