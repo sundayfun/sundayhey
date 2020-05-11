@@ -570,8 +570,8 @@ p.agileinfo{
 
 /*-- sub-banner --*/
 	.sub-banner{
-		background:url(../images/banner3.jpg) no-repeat 0px 0px;
-		min-height:87px;
+		background-color: #cccccc;
+		min-height:82px;
 	}
 /*-- //sub-banner--*/
 /*-- about--*/
@@ -858,8 +858,8 @@ figure.effect-zoe:hover p.icon-links a:first-child {
 	min-height:700px;
 }
 .collection-grid.collection-image.collection-grid-2 {
-    background: url(../images/c4.jpg) no-repeat 0px 0px;
-	background-size:cover;
+    background: url(../images/c4.jpg) no-repeat 14px 0px;
+	background-size:contain;
 }
 .collection-grid.collection-image.collection-grid-4 {
     background: url(../images/c3.jpg) no-repeat 0px 0px;

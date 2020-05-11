@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="css/login.css" rel="stylesheet" type="text/css" media="all" />
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/axios.min.js"></script>
+</head>
+<body>
+    <div class="content">
+        <div class="form sign-in">
+            <h2>欢迎回来</h2>
+            <label>
+                <span>用户名</span>
+                <input id="login-username" type="username" /><span class="fz nouser">* 用户名不能为空</span>
+            </label>
+            <label>
+                <span>密码</span>
+                <input id="login-password" type="password" /><span class="fz nopwd">* 密码不能为空</span>
+            </label>
+            <label>
+                <span>验证码</span>
+                <div style="display: inline-flex;">
+                    <input type="text" id="re-code" />
+                    <img id="code-pic">
+                </div>
+                <span class="fz re-code">* 验证码不能为空</span>
+            </label>
+            <button type="button" id="login" class="submit">登 录</button>
+        </div>
+        <div class="sub-cont">
+            <div class="img">
+                <div class="img__text m--up">
+                    <h2>还未注册？</h2>
+                    <p>立即注册，发现大量机会！</p>
+                </div>
+                <div class="img__text m--in">
+                    <h2>已有帐号？</h2>
+                    <p>有帐号就登录吧，好久不见了！</p>
+                </div>
+                <div class="img__btn">
+                    <span class="m--up">注 册</span>
+                    <span class="m--in">登 录</span>
+                </div>
+            </div>
+            <div class="form sign-up">
+                <h2>立即注册</h2>
+                <label>
+                    <span>用户名</span>
+                    <input type="text" id="register-un" /><span class="fz re-nouser">* 用户名不能为空</span>
+                </label>
+                <label>
+                    <span>密码</span>
+                    <input type="password" id="register-pw" /><span class="fz re-nopwd">* 必须包含数字、大写字母、小写字母、特殊字符中三种字符，且长度在8到20之间</span>
+                </label>
+                <label>
+                    <span>验证码</span>
+                    <div style="display: inline-flex;">
+                        <input type="text" id="re-code" />
+                        <img id="code-pic">
+                    </div>
+                    <span class="fz re-code">* 验证码不能为空</span>
+                </label>
+                <button type="button" id="register" class="submit">注 册</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var loginStatus = true;
+        var captcha_id = '';
+
+        var loginUsername = $('#login-username');
+        var loginPassword = $('#login-password');
+        var registerUn = $('#register-un');
+        var registerPw = $('#register-pw');
+        var codeVal = $('#re-code');
+        var pwRegex = new RegExp('^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\W_!@#$%^&*`~()-+=]+$)(?![a-z0-9]+$)(?![a-z\W_!@#$%^&*`~()-+=]+$)(?![0-9\W_!@#$%^&*`~()-+=]+$)[a-zA-Z0-9\W_!@#$%^&*`~()-+=]{8,20}$');
+
+        $('.img__btn').click(function () {
+            $(".nouser").hide(); $(".nopwd").hide(); $(".re-nouser").hide(); $(".re-nopwd").hide();
+            document.querySelector('.content').classList.toggle('s--signup')
+            loginStatus = !loginStatus;
+            loginUsername.val('');
+            loginPassword.val('');
+            codeVal.val('');
+            registerUn.val('');
+            registerPw.val('');
+            captcha_id = '';
+            axiosCaptcha();
+            $('#code-pic').attr('src', '');
+        })
+
+        loginUsername.bind("input propertychange", function () {
+            if (loginUsername.val().length < 1) { $(".nouser").show(); } else { $(".nouser").hide(); }
+        });
+        loginPassword.bind("input propertychange", function () {
+            if (loginPassword.val().length < 1) { $(".nopwd").show(); } else { $(".nopwd").hide(); }
+        });
+        registerUn.bind("input propertychange", function () {
+            if (registerUn.val().length < 1) { $(".re-nouser").show(); } else { $(".re-nouser").hide(); }
+        });
+        registerPw.bind("input propertychange", function () {
+            if (registerPw.val().length < 1) { $(".re-nopwd").show(); } else { $(".re-nopwd").hide(); }
+            if (!pwRegex.test(registerPw.val())) { $(".re-nopwd").show(); } else { $(".re-nopwd").hide(); }
+        });
+        codeVal.bind("input propertychange", function () {
+            if (codeVal.val().length > 0) { $(".re-code").hide(); }
+        })
+
+        var userLogin = $('#login');
+        var userRegister = $('#register');
+        userLogin.click(function () {
+            if (!loginUsername.val()) {
+                $(".nouser").show();
+            } else if (!loginPassword.val()) {
+                $(".nopwd").show();
+            } else if (!codeVal.val()) {
+                $('.re-code').show();
+            } else {
+                axiosLogin(loginUsername.val(), loginPassword.val(), codeVal.val());
+            }
+        })
+        userRegister.click(function () {
+            if (!registerUn.val()) {
+                $(".re-nouser").show();
+            } else if (!pwRegex.test(registerPw.val())){
+                $(".re-nopwd").show();
+            } else if (!codeVal.val()) {
+                $('.re-code').show();
+            } else {
+                axiosRegister(registerUn.val(), registerPw.val(), codeVal.val());
+            }
+        })
+
+        axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+        axios.defaults.headers.post['Cache-Contro'] = 'no-cache'
+        axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
+        axios.defaults.headers.post['Access-Control-Allow-Headers'] = 'Origin, Content-Type, Accept, Authorization, X-Request-With'
+        axios.defaults.headers.post['Access-Control-Allow-Methods'] = 'PUT,POST,GET,DELETE,OPTIONS'
+
+        const instance = axios.create({
+            baseURL: 'https://staging.huayinapp.com/api/1',
+            timeout: 3000,
+        });
+
+        $(axiosCaptcha());
+        function axiosCaptcha() {
+            instance.post('/web/captcha').then(function (res) {
+                captcha_id = res.captcha_id;
+                instance.get('/api/1/web/captcha/'+ res.captcha_id).then(function(res) {
+                    $('#code-pic').attr("src", res);
+                })
+            })
+        }
+
+        function axiosRegister(name, pw, cInput) {
+            instance.post('/api/1/web/user/register', {
+                login_name: name,
+                password: pw,
+                captcha_id: captcha_id,
+                captcha_input: cInput,
+            }).then(function (res) {
+                location.href = '/';
+            })
+        }
+
+        function axiosLogin(name, pw, code) {
+            instance.post('/api/1/web/user/login', {
+                login_name: name,
+                password: pw,
+                captcha_id: captcha_id,
+                captcha_input: code,
+            }).then(function (res) {
+                location.href = '/';
+            })
+        }
+    </script>
+</body>
+</html>
