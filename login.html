@@ -8,7 +8,6 @@
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.js"></script>
     <script src="js/axios.min.js"></script>
-
 </head>
 <body>
     <div class="content">
@@ -24,7 +23,11 @@
             </label>
             <label>
                 <span>验证码</span>
-                <input type="number" id="code" />
+                <div style="display: inline-flex;">
+                    <input type="text" id="re-code" />
+                    <img id="code-pic">
+                </div>
+                <span class="fz re-code">* 验证码不能为空</span>
             </label>
             <button type="button" id="login" class="submit">登 录</button>
         </div>
@@ -55,7 +58,11 @@
                 </label>
                 <label>
                     <span>验证码</span>
-                    <input type="number" id="re-code"/><span class="fz re-code">* 用户名不能为空</span>
+                    <div style="display: inline-flex;">
+                        <input type="text" id="re-code" />
+                        <img id="code-pic">
+                    </div>
+                    <span class="fz re-code">* 验证码不能为空</span>
                 </label>
                 <button type="button" id="register" class="submit">注 册</button>
             </div>
@@ -68,23 +75,23 @@
 
         var loginUsername = $('#login-username');
         var loginPassword = $('#login-password');
-        var loginCode = $('#code');
         var registerUn = $('#register-un');
         var registerPw = $('#register-pw');
-        var registerCode = $('#re-code');
+        var codeVal = $('#re-code');
         var pwRegex = new RegExp('^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\W_!@#$%^&*`~()-+=]+$)(?![a-z0-9]+$)(?![a-z\W_!@#$%^&*`~()-+=]+$)(?![0-9\W_!@#$%^&*`~()-+=]+$)[a-zA-Z0-9\W_!@#$%^&*`~()-+=]{8,20}$');
 
-
         $('.img__btn').click(function () {
+            $(".nouser").hide(); $(".nopwd").hide(); $(".re-nouser").hide(); $(".re-nopwd").hide();
             document.querySelector('.content').classList.toggle('s--signup')
             loginStatus = !loginStatus;
-            !loginStatus && axiosCaptcha();
             loginUsername.val('');
             loginPassword.val('');
-            loginCode.val('');
+            codeVal.val('');
             registerUn.val('');
             registerPw.val('');
-            registerCode.val('');
+            captcha_id = '';
+            axiosCaptcha();
+            $('#code-pic').attr('src', '');
         })
 
         loginUsername.bind("input propertychange", function () {
@@ -100,55 +107,52 @@
             if (registerPw.val().length < 1) { $(".re-nopwd").show(); } else { $(".re-nopwd").hide(); }
             if (!pwRegex.test(registerPw.val())) { $(".re-nopwd").show(); } else { $(".re-nopwd").hide(); }
         });
+        codeVal.bind("input propertychange", function () {
+            if (codeVal.val().length > 0) { $(".re-code").hide(); }
+        })
 
         var userLogin = $('#login');
         var userRegister = $('#register');
         userLogin.click(function () {
             if (!loginUsername.val()) {
-                console.log('填写用户名');
+                $(".nouser").show();
             } else if (!loginPassword.val()) {
-                console.log('填写密码');
-            } else if (!registerCode.val()) {
-                console.log('填写验证码');
+                $(".nopwd").show();
+            } else if (!codeVal.val()) {
+                $('.re-code').show();
             } else {
-                axiosLogin(loginUsername.val(), loginPassword.val(), registerCode.val());
+                axiosLogin(loginUsername.val(), loginPassword.val(), codeVal.val());
             }
         })
         userRegister.click(function () {
             if (!registerUn.val()) {
-                console.log('填写用户名');
+                $(".re-nouser").show();
             } else if (!pwRegex.test(registerPw.val())){
-                console.log('密码格式不正确');
-            } else if (!registerCode.val()) {
-                console.log('填写验证码');
+                $(".re-nopwd").show();
+            } else if (!codeVal.val()) {
+                $('.re-code').show();
             } else {
-                axiosRegister(registerUn.val(), registerPw.val(), registerCode.val());
+                axiosRegister(registerUn.val(), registerPw.val(), codeVal.val());
             }
         })
 
+        axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+        axios.defaults.headers.post['Cache-Contro'] = 'no-cache'
+        axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*'
+        axios.defaults.headers.post['Access-Control-Allow-Headers'] = 'Origin, Content-Type, Accept, Authorization, X-Request-With'
+        axios.defaults.headers.post['Access-Control-Allow-Methods'] = 'PUT,POST,GET,DELETE,OPTIONS'
 
         const instance = axios.create({
-            baseURL: 'https://huayinapp.com',
-            timeout: 1000,
-            headers: { 'Content-Type': 'multipart/form-data' },
-            proxyTable: {
-                "/api/1": {
-                    secure: false,
-                    changeOrigin: true,
-                    pathRewrite: {
-                        "^/api": ""
-                    }
-                }
-            },
+            baseURL: 'https://staging.huayinapp.com/api/1',
+            timeout: 3000,
         });
-    
-        instance.defaults.withCredentials = true
-        instance.defaults.headers.get['Content-Type'] = 'application/x-www-form-urlencoded'
 
+        $(axiosCaptcha());
         function axiosCaptcha() {
-            instance.post('/api/1/web/captcha').then(function(res) {
+            instance.post('/web/captcha').then(function (res) {
+                captcha_id = res.captcha_id;
                 instance.get('/api/1/web/captcha/'+ res.captcha_id).then(function(res) {
-                    console.log(res);
+                    $('#code-pic').attr("src", res);
                 })
             })
         }
@@ -160,7 +164,7 @@
                 captcha_id: captcha_id,
                 captcha_input: cInput,
             }).then(function (res) {
-                console.log(res);
+                location.href = '/';
             })
         }
 
@@ -171,7 +175,6 @@
                 captcha_id: captcha_id,
                 captcha_input: code,
             }).then(function (res) {
-                console.log(res);
                 location.href = '/';
             })
         }
