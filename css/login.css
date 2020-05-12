@@ -9,6 +9,10 @@ body {
     background: #ededed;
 }
 
+.code-pic {
+    max-width: 130px;
+}
+
 input, button {
     border: none;
     outline: none;

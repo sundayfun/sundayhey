@@ -31,7 +31,7 @@
 			<li><a href="games.html">游戏中心</a></li>
 			<li><a href="single.html">游戏介绍</a></li>
 			<li><a href="contact.html">联系我们</a></li>
-			<li style="position: absolute;right: 10px;"><a href="login.html">登录/注册</a></li>
+			<li style="position: absolute;right: 10px;"><a id="login" href="login.html">登录/注册</a></li>
 		</ul>
 	</nav>
 <!-- Header -->
@@ -178,7 +178,13 @@
 		</div>
 	</div>
 </div>
-
+<script>
+	var userName = window.sessionStorage.getItem("user");
+	if (userName) {
+		$('#login').text('用户名:' + userName);
+		$('#login').attr('href', '/');
+	}
+</script>
 <!-- //footer -->
 </body>
 </html>

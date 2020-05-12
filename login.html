@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>SundayHey 登录</title>
     <link href="css/login.css" rel="stylesheet" type="text/css" media="all" />
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.js"></script>
@@ -24,12 +24,13 @@
             <label>
                 <span>验证码</span>
                 <div style="display: inline-flex;">
-                    <input type="text" id="re-code" />
-                    <img id="code-pic">
+                    <input type="text" id="lg-code" />
+                    <img class="code-pic">
                 </div>
                 <span class="fz re-code">* 验证码不能为空</span>
             </label>
             <button type="button" id="login" class="submit">登 录</button>
+            <span class="fz lg-err" style="width: 460px;margin: 0 auto;text-align: center;">* 信息输入有误</span>
         </div>
         <div class="sub-cont">
             <div class="img">
@@ -60,11 +61,12 @@
                     <span>验证码</span>
                     <div style="display: inline-flex;">
                         <input type="text" id="re-code" />
-                        <img id="code-pic">
+                        <img class="code-pic" src="" data-src="">
                     </div>
                     <span class="fz re-code">* 验证码不能为空</span>
                 </label>
                 <button type="button" id="register" class="submit">注 册</button>
+                <span class="fz re-err" style="width: 460px;margin: 0 auto;text-align: center;">* 信息输入有误</span>
             </div>
         </div>
     </div>
@@ -77,22 +79,28 @@
         var loginPassword = $('#login-password');
         var registerUn = $('#register-un');
         var registerPw = $('#register-pw');
-        var codeVal = $('#re-code');
+        var lgCodeVal = $('#lg-code');
+        var reCodeVal = $('#re-code');
         var pwRegex = new RegExp('^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\W_!@#$%^&*`~()-+=]+$)(?![a-z0-9]+$)(?![a-z\W_!@#$%^&*`~()-+=]+$)(?![0-9\W_!@#$%^&*`~()-+=]+$)[a-zA-Z0-9\W_!@#$%^&*`~()-+=]{8,20}$');
 
         $('.img__btn').click(function () {
+            clearData();
+        })
+
+        function clearData() {
             $(".nouser").hide(); $(".nopwd").hide(); $(".re-nouser").hide(); $(".re-nopwd").hide();
             document.querySelector('.content').classList.toggle('s--signup')
             loginStatus = !loginStatus;
             loginUsername.val('');
             loginPassword.val('');
-            codeVal.val('');
+            lgCodeVal.val('');
+            reCodeVal.val('');
             registerUn.val('');
             registerPw.val('');
             captcha_id = '';
             fetchCaptcha();
-            $('#code-pic').attr('src', '');
-        })
+            $('.code-pic').attr('src', ''); 
+        }
 
         loginUsername.bind("input propertychange", function () {
             if (loginUsername.val().length < 1) { $(".nouser").show(); } else { $(".nouser").hide(); }
@@ -107,9 +115,13 @@
             if (registerPw.val().length < 1) { $(".re-nopwd").show(); } else { $(".re-nopwd").hide(); }
             if (!pwRegex.test(registerPw.val())) { $(".re-nopwd").show(); } else { $(".re-nopwd").hide(); }
         });
-        codeVal.bind("input propertychange", function () {
-            if (codeVal.val().length > 0) { $(".re-code").hide(); }
+        lgCodeVal.bind("input propertychange", function () {
+            if (lgCodeVal.val().length > 0) { $(".re-code").hide(); }
         })
+        reCodeVal.bind("input propertychange", function () {
+            if (reCodeVal.val().length > 0) { $(".re-code").hide(); }
+        })
+        $('.code-pic').click(function() { fetchCaptcha() });
 
         var userLogin = $('#login');
         var userRegister = $('#register');
@@ -118,10 +130,10 @@
                 $(".nouser").show();
             } else if (!loginPassword.val()) {
                 $(".nopwd").show();
-            } else if (!codeVal.val()) {
+            } else if (!lgCodeVal.val()) {
                 $('.re-code').show();
             } else {
-                fetchLogin(loginUsername.val(), loginPassword.val(), codeVal.val());
+                fetchLogin(loginUsername.val(), loginPassword.val(), lgCodeVal.val());
             }
         })
         userRegister.click(function () {
@@ -129,13 +141,12 @@
                 $(".re-nouser").show();
             } else if (!pwRegex.test(registerPw.val())){
                 $(".re-nopwd").show();
-            } else if (!codeVal.val()) {
+            } else if (!reCodeVal.val()) {
                 $('.re-code').show();
             } else {
-                fetchRegister(registerUn.val(), registerPw.val(), codeVal.val());
+                fetchRegister(registerUn.val(), registerPw.val(), reCodeVal.val());
             }
         })
-
         function fetchTimeout(fetchPromise, path, timeout) {
             let abortFunc = null;
             const abortPromise = new Promise((resolve, reject) => {
@@ -159,9 +170,9 @@
                 url,
                 3000
             )
-            .then(res => res.text())
+            .then(res => config.method === 'GET' ? res.blob() : res.text())
             .then(res => {
-                const result = res ? JSON.parse(res) : {};
+                const result = config.method === 'GET' ? res : (res ? JSON.parse(res) : {});
                 return result.code < 0 ? Promise.reject(result) : result;
             });
         }
@@ -169,46 +180,74 @@
         function get(url, { params } = {}) {
             return createFetch(params ? `${url}?${JSON.stringify(params)}` : url, {
                 method: 'GET',
+                mode: 'cors'
             });
         }
 
         function post(url, { data, mode } = {}) {
+            console.log(data)
             return createFetch(url, {
                 method: 'POST',
                 body: JSON.stringify(data),
-                mode: 'no-cors',
+                mode: 'cors',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
             });
         }
+
         var origin = 'https://staging.huayinapp.com/api/1'
         $(fetchCaptcha());
         function fetchCaptcha() {
             post(origin+'/web/captcha').then(function (res) {
                 captcha_id = res.captcha_id;
-                get('/api/1/web/captcha/'+ res.captcha_id).then(function(res) {
-                    $('#code-pic').attr("src", res);
+                get(origin+'/web/captcha/'+ res.captcha_id).then(function(data) {
+                    console.log(data);
+                    const fileReader = new FileReader();
+                    fileReader.onload = (e) => {
+                        console.log(e.target.result);
+                        $('.code-pic').attr("src", e.target.result);
+                    };
+                    fileReader.readAsDataURL(data);
                 })
             })
         }
 
         function fetchRegister(name, pw, cInput) {
             post(origin + '/web/user/register', {
-                login_name: name,
-                password: pw,
-                captcha_id: captcha_id,
-                captcha_input: cInput,
+                data: {
+                    login_name: name,
+                    password: pw,
+                    captcha_id: captcha_id,
+                    captcha_input: cInput,
+                }
             }).then(function (res) {
-                location.href = '/';
+                console.log(res);
+                $('.img__btn').click();
+                // location.href = '/';
+            }).catch(err => {
+                $('.re-err').show();
+                $('.re-err').text(err.msg);
+                console.log(err);
             })
         }
 
         function fetchLogin(name, pw, code) {
             post(origin +'/web/user/login', {
-                login_name: name,
-                password: pw,
-                captcha_id: captcha_id,
-                captcha_input: code,
+                data: {
+                    login_name: name,
+                    password: pw,
+                    captcha_id: captcha_id,
+                    captcha_input: code,
+                }
             }).then(function (res) {
+                console.log(res);
+                window.sessionStorage.setItem("user", res.login_name);
                 location.href = '/';
+            }).catch(err => {
+                $('.lg-err').show();
+                $('.lg-err').text(err.msg);
+                console.log(err);
             })
         }
     </script>
