@@ -30,7 +30,7 @@
                 <span class="fz re-code">* 验证码不能为空</span>
             </label>
             <button type="button" id="login" class="submit">登 录</button>
-            <span class="fz lg-err" style="width: 460px;margin: 0 auto;text-align: center;">* 信息输入有误</span>
+            <span class="fz lg-err" style="width: 460px;margin: 0 auto;text-align: center;margin-left: 160px;">* 信息输入有误</span>
         </div>
         <div class="sub-cont">
             <div class="img">
@@ -66,7 +66,7 @@
                     <span class="fz re-code">* 验证码不能为空</span>
                 </label>
                 <button type="button" id="register" class="submit">注 册</button>
-                <span class="fz re-err" style="width: 460px;margin: 0 auto;text-align: center;">* 信息输入有误</span>
+                <span class="fz re-err" style="width: 460px;margin: 0 auto;text-align: center;margin-left: 160px;">* 信息输入有误</span>
             </div>
         </div>
     </div>
@@ -99,6 +99,8 @@
             registerPw.val('');
             captcha_id = '';
             fetchCaptcha();
+            $('.lg-err').hide();
+            $('.re-err').hide();
             $('.code-pic').attr('src', ''); 
         }
 
