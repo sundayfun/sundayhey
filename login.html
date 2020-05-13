@@ -185,7 +185,6 @@
         }
 
         function post(url, { data, mode } = {}) {
-            console.log(data)
             return createFetch(url, {
                 method: 'POST',
                 body: JSON.stringify(data),
@@ -196,13 +195,12 @@
             });
         }
 
-        var origin = 'https://staging.huayinapp.com/api/1'
+        var origin = 'https://huayinapp.com/api/1'
         $(fetchCaptcha());
         function fetchCaptcha() {
             post(origin+'/web/captcha').then(function (res) {
                 captcha_id = res.captcha_id;
                 get(origin+'/web/captcha/'+ res.captcha_id).then(function(data) {
-                    console.log(data);
                     const fileReader = new FileReader();
                     fileReader.onload = (e) => {
                         console.log(e.target.result);
@@ -222,13 +220,10 @@
                     captcha_input: cInput,
                 }
             }).then(function (res) {
-                console.log(res);
                 $('.img__btn').click();
-                // location.href = '/';
             }).catch(err => {
                 $('.re-err').show();
                 $('.re-err').text(err.msg);
-                console.log(err);
             })
         }
 
@@ -241,13 +236,16 @@
                     captcha_input: code,
                 }
             }).then(function (res) {
-                console.log(res);
-                window.sessionStorage.setItem("user", res.login_name);
-                location.href = '/';
+                if (res.login_name) {
+                    window.sessionStorage.setItem("user", res.login_name);
+                    location.href = '/';
+                } else {
+                    $('.lg-err').show();
+                    $('.lg-err').text(err.msg || '信息输入有误');  
+                }
             }).catch(err => {
                 $('.lg-err').show();
                 $('.lg-err').text(err.msg);
-                console.log(err);
             })
         }
     </script>
